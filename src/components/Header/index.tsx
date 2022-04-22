@@ -16,6 +16,7 @@ export default function Header({ isLoggedIn }: HeaderProps) {
                     <div className="input-div">
                         <input type="text" placeholder="Pesquise por disciplina" />
                     </div>
+                    <div className="separator"></div>
                 </LoggedIn>
                 :
                 <LoggedOut>

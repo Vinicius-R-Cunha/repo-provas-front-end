@@ -51,6 +51,15 @@ export const LoggedIn = styled.div`
             }
         }
     }
+
+    .separator {
+        width: 100%;
+        height: 2px;
+
+        margin-top: 25px;
+
+        background-color: #C4C4C4;
+    }
 `
 
 export const LoggedOut = styled.div`
