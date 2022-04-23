@@ -2,9 +2,6 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     width: fit-content;
-    /* width: 100%; */
-    
-    background-color: green;
 
     display: flex;
     flex-direction: column;
@@ -82,11 +79,11 @@ export const InputsForm = styled.form`
         position: relative;
 
         .show-hide {
-            font-size: 28px;
+            font-size: 26px;
             color: rgba(0, 0, 0, 0.54);
 
             position: absolute;
-            top: 15.5px;
+            top: 17px;
             right: 14px;
 
             cursor: pointer;

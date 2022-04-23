@@ -8,7 +8,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/sign-up' element={<SignUp />} />
-        {/* <Route path='/sign-in' element={<SignIn />} /> */}
+        <Route path='/sign-in' element={<SignIn />} />
       </Routes>
       <GlobalStyles />
     </BrowserRouter>

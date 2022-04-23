@@ -1,5 +1,17 @@
+import AuthForm from "../../components/AuthForm";
+import Header from "../../components/Header";
+import { Container } from "../SignUp/style";
+
 export default function SignIn() {
+
     return (
-        <h1>loginzada</h1>
+        <>
+            <Header isLoggedIn={false} />
+            <Container>
+                <AuthForm
+                    title="Login"
+                />
+            </Container>
+        </>
     );
 }
