@@ -19,6 +19,8 @@ export const LoggedIn = styled.div`
         position: absolute;
         top: -18px;
         right: 2%;
+
+        cursor: pointer;
     }
 
     .input-div {

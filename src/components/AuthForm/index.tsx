@@ -1,8 +1,9 @@
 import { Container, Spacer, GithubButton, InputsForm, LinkButtonDiv } from "./style";
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import * as api from "../../services/api";
+import UserContext from "../../contexts/UserContext";
 
 type Title = "Cadastro" | "Login";
 interface AuthProps {
@@ -22,6 +23,8 @@ export default function AuthForm({ title }: AuthProps) {
     const [isShowingConfirmation, setIsShowingConfirmation] = useState(false);
     const [formData, setFormData] = useState({ email: '', password: '', passwordConfirmation: '' } as FormData);
 
+    const { setToken } = useContext(UserContext);
+
     function handleFormData(e: React.ChangeEvent) {
         var element = e.target as HTMLInputElement;
         setFormData({ ...formData, [element.name]: element.value })
@@ -33,12 +36,14 @@ export default function AuthForm({ title }: AuthProps) {
         if (title === "Cadastro") {
             const promise = await api.signUp(formData);
             if (promise) {
-                navigate('/');
+                navigate('/sign-in');
             }
         } else {
             delete formData.passwordConfirmation;
             const token = await api.signIn(formData);
             if (token) {
+                localStorage.setItem('token', token);
+                setToken(token);
                 navigate('/');
             }
         }
