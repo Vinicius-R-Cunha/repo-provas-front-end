@@ -29,6 +29,7 @@ const GlobalStyles = createGlobalStyle`
     body {
         line-height: 1;
         font-family: 'Roboto', sans-serif;
+        background-color: #E5E5E5;
     }
     ol, ul {
         list-style: none;
