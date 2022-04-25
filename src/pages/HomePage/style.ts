@@ -14,6 +14,10 @@ export const Content = styled.div`
 
     margin-top: 36px;
 
+    .margin-top {
+        margin-top: 20px;
+    }
+
     @media (max-width: 700px) {
         width: 100%;
     }
@@ -74,6 +78,19 @@ export const TestsDiv = styled.div`
     .margin-fix {
         margin: 0;
     }
+
+    .hidden {
+        max-height: 0;
+        transition: max-height 0.1s ease-out;
+        visibility: hidden;
+        overflow: hidden;
+        margin: 0;
+    }
+    
+    .active {
+        max-height: 1000px;
+        transition: max-height 0.4s ease-in;
+    }
 `
 
 export const TitleDiv = styled.div`
@@ -90,9 +107,9 @@ export const TitleDiv = styled.div`
     background-color: #FFFFFF;
 
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
-    border-radius: 0 0 4px 4px;
+    border-radius: 4px;
 
-    margin: -6px 0;
+    margin: -3px 0;
 
     p {
         font-family: 'Poppins';
@@ -112,27 +129,22 @@ export const TitleDiv = styled.div`
 `
 
 export const OpenContent = styled.div`
-    margin: 20px 0; 
+    margin-bottom: 20px;
 
     background-color: #FFFFFF;
 
     border-radius: 4px;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
-
-    .border-fix {
-        border-radius: 4px 4px 0 0;
-        box-shadow: none;
-    }
 `
 
 export const TestsData = styled.div`
-    padding-bottom: 15px;
+    padding-bottom: 4px;
 `
 
 export const Test = styled.div`
     box-sizing: border-box;
     
-    padding: 0 38px;
+    padding: 5px 38px;
 
     p {
         font-family: 'Poppins';
@@ -144,7 +156,6 @@ export const Test = styled.div`
     .test-title {
         font-size: 14px;
         color: #000000;
-        margin-top: 15px;
         margin-bottom: 8px;
     }
     
@@ -166,9 +177,6 @@ export const SubjectDiv = styled.div`
     box-sizing: border-box;
     padding: 0 28px;
 
-    background-color: #FFFFFF;
-
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
     border-radius: 0 0 4px 4px;
 
     margin: -6px 0;
