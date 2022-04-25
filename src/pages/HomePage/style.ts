@@ -57,6 +57,14 @@ export const NavMenu = styled.nav`
 
 export const TestsDiv = styled.div`
     width: 100%;
+
+    .shadow-fix {
+        box-shadow: none;
+    }
+
+    .margin-fix {
+        margin: 0;
+    }
 `
 
 export const TitleDiv = styled.div`
@@ -109,8 +117,6 @@ export const OpenContent = styled.div`
 `
 
 export const TestsData = styled.div`
-    margin-top: 6px;
-
     padding-bottom: 15px;
 `
 
@@ -173,4 +179,23 @@ export const SubjectDiv = styled.div`
 
         cursor: pointer;
     }
+`
+
+export const LoadingDiv = styled.div`
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #E5E5E5;
+
+    position:absolute;
+    top:0px;
+    right:0px;
+    bottom:0px;
+    left:0px;
+
+    z-index: -1;
 `

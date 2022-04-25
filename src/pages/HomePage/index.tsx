@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import UserContext from "../../contexts/UserContext";
 import * as api from "../../services/api";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import loadSvg from '../../assets/loading.svg';
 import {
     Container,
     Content,
@@ -13,7 +14,8 @@ import {
     OpenContent,
     TestsData,
     Test,
-    SubjectDiv
+    SubjectDiv,
+    LoadingDiv
 } from "./style";
 
 type Tabs = 'disciplinas' | 'instrutores' | 'adicionar'
@@ -23,10 +25,12 @@ export default function HomePage() {
     const { token, setToken } = useContext(UserContext);
     const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState('disciplinas' as Tabs);
+    const [disciplinesArray, setDisciplinesArray] = useState([] as any[]);
+    const [teachersArray, setTeachersArray] = useState([] as any[]);
 
     useEffect(() => {
         validateToken(token);
-        renderPage()
+        renderPage();
     }, [selectedTab]);
 
     async function validateToken(token: string) {
@@ -37,22 +41,81 @@ export default function HomePage() {
         };
     }
 
-    function renderPage() {
-        if (selectedTab === 'disciplinas') {
-            console.log('renderizou');
-        } else if (selectedTab === 'instrutores') {
-            console.log('renderizou');
-        } else if (selectedTab === 'adicionar') {
-            console.log('renderizou');
-        }
+    async function renderPage() {
+        const disciplines = await api.getTestsByDisciplines(token) as any;
+        setDisciplinesArray(() => {
+            const newArr = [];
+            for (let i = 0; i < disciplines?.data.length; i++) {
+                const termData = disciplines.data[i]?.termData;
+                const newObj = { ...disciplines.data[i], termData: addIsOpenKey(termData) };
+                newArr.push(newObj);
+            }
+
+            return addIsOpenKey(newArr);
+        });
+
+        const teachers = await api.getTestsByTeacher(token);
+        setTeachersArray(addIsOpenKey(teachers?.data));
     }
 
-    function openTab(tab: any) {
-        console.log('abriu');
+    function addIsOpenKey(array: any[]) {
+        const answer = [] as any[];
+        array.map(obj => {
+            answer.push({ ...obj, isOpen: false })
+        });
+        return answer;
     }
 
-    function closeTab(tab: any) {
-        console.log('fechou');
+    function toggleOpenCloseTeacher(obj: any) {
+        setTeachersArray(() => {
+            for (let i = 0; i < teachersArray.length; i++) {
+                if (teachersArray[i].id === obj.id) {
+                    teachersArray[i].isOpen = !teachersArray[i].isOpen;
+                }
+            }
+            return [...teachersArray];
+        });
+    }
+
+    function toggleOpenCloseTerm(obj: any) {
+        setDisciplinesArray(() => {
+            for (let i = 0; i < disciplinesArray.length; i++) {
+                if (disciplinesArray[i].termNumber === obj.termNumber) {
+                    disciplinesArray[i].isOpen = !disciplinesArray[i].isOpen;
+                }
+            }
+            return [...disciplinesArray];
+        });
+    }
+
+    function toggleOpenCloseDiscipline(obj: any) {
+        setDisciplinesArray(() => {
+            const newArr = [];
+            for (let i = 0; i < disciplinesArray.length; i++) {
+                const termData = disciplinesArray[i]?.termData;
+                const aux = [];
+                for (let j = 0; j < termData.length; j++) {
+                    if (termData[j] === obj) {
+                        aux.push({ ...termData[j], isOpen: !termData[j].isOpen })
+                    } else {
+                        aux.push({ ...termData[j] })
+                    }
+                }
+                newArr.push({ ...disciplinesArray[i], termData: aux });
+            }
+            return newArr;
+        });
+    }
+
+    if (teachersArray.length === 0) {
+        return (
+            <>
+                <Header isLoggedIn={true} />
+                <LoadingDiv>
+                    <img src={loadSvg} alt="" />
+                </LoadingDiv>
+            </>
+        );
     }
 
     return (
@@ -80,79 +143,110 @@ export default function HomePage() {
                             adicionar
                         </button>
                     </NavMenu>
-                    {/* aba disciplinas
-                    <TestsDiv>
-                        <OpenContent>
-                            <TitleDiv className="border-fix">
-                                <p>10 Período</p>
-                                <IoIosArrowUp className="open-icon" onClick={() => closeTab('Fulano')} />
-                            </TitleDiv>
 
-                            <TestsData>
-                                <SubjectDiv className="border-fix">
-                                    <p>CSS</p>
-                                    <IoIosArrowUp className="open-icon" onClick={() => closeTab('Fulano')} />
-                                </SubjectDiv>
-                                <Test>
-                                    <p className="test-title">P1</p>
-                                    <p className="test-name">2022 - globo.com (CSS)</p>
-                                </Test>
-                                <Test>
-                                    <p className="test-title">P1</p>
-                                    <p className="test-name">2022 - globo.com (CSS)</p>
-                                </Test>
-                                <Test>
-                                    <p className="test-title">P1</p>
-                                    <p className="test-name">2022 - globo.com (CSS)</p>
-                                </Test>
+                    {selectedTab === 'instrutores' &&
+                        teachersArray?.map(teacher => {
+                            return (
+                                <TestsDiv key={teacher?.id}>
+                                    {teacher?.isOpen ?
+                                        <OpenContent>
+                                            <TitleDiv className="border-fix">
+                                                <p>{teacher?.teacherName}</p>
+                                                <IoIosArrowUp
+                                                    className="open-icon"
+                                                    onClick={() => toggleOpenCloseTeacher(teacher)} />
+                                            </TitleDiv>
 
-                                <SubjectDiv className="border-fix">
-                                    <p>HTML</p>
-                                    <IoIosArrowUp className="open-icon" onClick={() => closeTab('Fulano')} />
-                                </SubjectDiv>
-                                <SubjectDiv className="border-fix">
-                                    <p>JAVASCRIPT</p>
-                                    <IoIosArrowUp className="open-icon" onClick={() => closeTab('Fulano')} />
-                                </SubjectDiv>
-                            </TestsData>
+                                            <TestsData>
+                                                {teacher?.teacherData?.map((category: any) => {
+                                                    return (
+                                                        <Test key={category?.id}>
+                                                            <p className="test-title">{category?.categoriyName}</p>
+                                                            {category?.categoryData?.map((test: any) => {
+                                                                return (
+                                                                    <p key={test?.id} className="test-name">
+                                                                        {`${test?.name} (${test?.teacherDiscipline?.discipline?.name})`}
+                                                                    </p>
+                                                                )
+                                                            })}
 
-                        </OpenContent>
+                                                        </Test>
+                                                    );
+                                                })}
+                                            </TestsData>
+                                        </OpenContent>
+                                        :
+                                        <TitleDiv>
+                                            <p>{teacher?.teacherName}</p>
+                                            <IoIosArrowDown
+                                                className="open-icon"
+                                                onClick={() => toggleOpenCloseTeacher(teacher)}
+                                            />
+                                        </TitleDiv>
+                                    }
+                                </TestsDiv>
+                            );
+                        })}
 
-                        <TitleDiv>
-                            <p>10 Período</p>
-                            <IoIosArrowDown className="open-icon" onClick={() => openTab('Fulano')} />
-                        </TitleDiv>
-                    </TestsDiv> */}
 
-                    {/* aba instrutores
-                    <TestsDiv>
-                        <OpenContent>
-                            <TitleDiv className="border-fix">
-                                <p>Fulano</p>
-                                <IoIosArrowUp className="open-icon" onClick={() => closeTab('Fulano')} />
-                            </TitleDiv>
-                            <TestsData>
-                                <Test>
-                                    <p className="test-title">P1</p>
-                                    <p className="test-name">2022 - globo.com (CSS)</p>
-                                </Test>
-                                <Test>
-                                    <p className="test-title">P2</p>
-                                    <p className="test-name">2022 - globo.com (HTML)</p>
-                                    <p className="test-name">2022 - instagram.com (HTML)</p>
-                                </Test>
-                                <Test>
-                                    <p className="test-title">P3</p>
-                                    <p className="test-name">2022 - parrots (JavaScript)</p>
-                                </Test>
-                            </TestsData>
-                        </OpenContent>
+                    {selectedTab === 'disciplinas' &&
+                        disciplinesArray?.map(term => {
+                            return (
+                                <TestsDiv key={term?.termNumber}>
+                                    {term?.isOpen ?
+                                        <OpenContent>
+                                            <TitleDiv className="border-fix">
+                                                <p>{`${term?.termNumber}º Período`}</p>
+                                                <IoIosArrowUp className="open-icon" onClick={() => toggleOpenCloseTerm(term)} />
+                                            </TitleDiv>
 
-                        <TitleDiv>
-                            <p>Fulano</p>
-                            <IoIosArrowDown className="open-icon" onClick={() => openTab('Fulano')} />
-                        </TitleDiv>
-                    </TestsDiv> */}
+                                            <TestsData>
+                                                {term?.termData?.map((discipline: any) => {
+                                                    return (
+                                                        discipline?.isOpen ?
+                                                            <OpenContent className="shadow-fix margin-fix" key={discipline?.disciplineName} >
+                                                                <TestsData>
+                                                                    <SubjectDiv className="border-fix">
+                                                                        <p>{discipline?.disciplineName}</p>
+                                                                        <IoIosArrowDown className="open-icon" onClick={() => toggleOpenCloseDiscipline(discipline)} />
+                                                                    </SubjectDiv>
+                                                                    {discipline?.disciplineData?.map((test: any) => {
+                                                                        return (
+                                                                            <Test key={test?.id}>
+                                                                                <p className="test-title">{test?.category?.name}</p>
+                                                                                <p className="test-name">{`${test?.name} (${test?.teacherDiscipline?.teacher?.name})`}</p>
+                                                                            </Test>
+                                                                        );
+                                                                    })}
+                                                                </TestsData>
+                                                            </OpenContent>
+                                                            :
+                                                            <SubjectDiv key={discipline?.disciplineName} className="border-fix">
+                                                                <p>{discipline?.disciplineName}</p>
+                                                                <IoIosArrowUp
+                                                                    className="open-icon"
+                                                                    onClick={() => toggleOpenCloseDiscipline(discipline)}
+                                                                />
+                                                            </SubjectDiv>
+                                                    );
+                                                })}
+                                            </TestsData>
+
+                                        </OpenContent>
+                                        :
+                                        <TitleDiv>
+                                            <p>{`${term?.termNumber}º Período`}</p>
+                                            <IoIosArrowDown
+                                                className="open-icon"
+                                                onClick={() => toggleOpenCloseTerm(term)}
+                                            />
+                                        </TitleDiv>
+                                    }
+                                </TestsDiv>
+                            );
+                        })
+                    }
+
                 </Content>
             </Container>
         </>

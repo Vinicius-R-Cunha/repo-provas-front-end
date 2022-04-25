@@ -38,3 +38,23 @@ export async function validateToken(token: string) {
         console.log(error.response);
     }
 }
+
+export async function getTestsByTeacher(token: string) {
+    try {
+        const config = createConfig(token);
+        const promise = await axios.get(`${BASE_URL}/tests/teacher`, config);
+        return promise;
+    } catch (error: any) {
+        console.log(error.response);
+    }
+}
+
+export async function getTestsByDisciplines(token: string) {
+    try {
+        const config = createConfig(token);
+        const promise = await axios.get(`${BASE_URL}/tests/discipline`, config);
+        return promise;
+    } catch (error: any) {
+        console.log(error.response);
+    }
+}
