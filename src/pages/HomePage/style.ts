@@ -36,6 +36,8 @@ export const NavMenu = styled.nav`
         font-size: 14px;
         letter-spacing: 0.4px;
         text-transform: uppercase;
+        text-align: center;
+        line-height: 16px;
         color: #1976D2;
 
         background-color:#E5E5E5;
@@ -51,6 +53,13 @@ export const NavMenu = styled.nav`
     .selected {
         color: #FFFFFF;
         background-color: #1976D2;
+    }
+
+    @media (max-width: 465px) {
+        button {
+            font-size: 10px;
+            padding: 2% 3.5%;
+        }
     }
 
 `

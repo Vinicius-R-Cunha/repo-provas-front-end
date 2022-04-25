@@ -62,6 +62,22 @@ export const LoggedIn = styled.div`
 
         background-color: #C4C4C4;
     }
+
+    @media (max-width: 465px) {
+        img {
+            width: 70%;
+        }
+
+        .logout-button {
+            font-size: 28px;
+        }
+
+        .input-div {
+            input {
+                width: 100%;
+            }
+        }
+    }
 `
 
 export const LoggedOut = styled.div`
