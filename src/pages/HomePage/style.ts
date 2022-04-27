@@ -81,15 +81,15 @@ export const TestsDiv = styled.div`
 
     .hidden {
         max-height: 0;
-        transition: max-height 0.1s ease-out;
+        transition: max-height 0.2s ease-out;
         visibility: hidden;
         overflow: hidden;
         margin: 0;
     }
     
     .active {
-        max-height: 1000px;
-        transition: max-height 0.4s ease-in;
+        max-height: 10000px;
+        transition: max-height 2.2s ease-in;
     }
 `
 

@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import UserContext from "../../contexts/UserContext";
+import SearchContext from "../../contexts/SearchContext";
 import * as api from "../../services/api";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import loadSvg from '../../assets/loading.svg';
@@ -23,6 +24,7 @@ type Tabs = 'disciplinas' | 'instrutores' | 'adicionar'
 export default function HomePage() {
 
     const { token, setToken } = useContext(UserContext);
+    const { searchInput, setSearchInput } = useContext(SearchContext);
     const navigate = useNavigate();
     const [selectedTab, setSelectedTab] = useState('disciplinas' as Tabs);
     const [disciplinesArray, setDisciplinesArray] = useState([] as any[]);
@@ -107,10 +109,23 @@ export default function HomePage() {
         });
     }
 
+    function searchTeacherFilter(teacher: any) {
+        return teacher?.teacherName?.toUpperCase()?.includes(searchInput.toUpperCase());
+    }
+
+    function searchDisciplineFilter(term: any) {
+        for (let i = 0; i < term?.termData.length; i++) {
+            if (term?.termData[i]?.disciplineName?.toUpperCase().includes(searchInput.toUpperCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     if (teachersArray.length === 0) {
         return (
             <>
-                <Header isLoggedIn={true} />
+                <Header isLoggedIn={true} inputType={selectedTab} />
                 <LoadingDiv>
                     <img src={loadSvg} alt="" />
                 </LoadingDiv>
@@ -120,73 +135,41 @@ export default function HomePage() {
 
     return (
         <>
-            <Header isLoggedIn={true} />
+            <Header isLoggedIn={true} inputType={selectedTab} />
             <Container>
                 <Content>
                     <NavMenu>
                         <button
                             className={selectedTab === 'disciplinas' ? 'selected' : ''}
-                            onClick={() => setSelectedTab('disciplinas')}
+                            onClick={() => {
+                                setSelectedTab('disciplinas');
+                                setSearchInput('');
+                            }}
                         >
                             disciplinas
                         </button>
                         <button
                             className={selectedTab === 'instrutores' ? 'selected' : ''}
-                            onClick={() => setSelectedTab('instrutores')}
+                            onClick={() => {
+                                setSelectedTab('instrutores');
+                                setSearchInput('');
+                            }}
                         >
                             pessoa instrutora
                         </button>
                         <button
                             className={selectedTab === 'adicionar' ? 'selected' : ''}
-                            onClick={() => setSelectedTab('adicionar')}
+                            onClick={() => {
+                                setSelectedTab('adicionar');
+                                setSearchInput('');
+                            }}
                         >
                             adicionar
                         </button>
                     </NavMenu>
 
-                    {selectedTab === 'instrutores' &&
-                        teachersArray?.map(teacher => {
-                            return (
-                                <TestsDiv key={teacher?.id} className={teacher?.isOpen ? 'margin-top' : ''}>
-
-                                    <TitleDiv>
-                                        <p>{teacher?.teacherName}</p>
-                                        {teacher?.isOpen ? <IoIosArrowUp
-                                            className="open-icon"
-                                            onClick={() => toggleOpenCloseTeacher(teacher)} />
-                                            :
-                                            <IoIosArrowDown
-                                                className="open-icon"
-                                                onClick={() => toggleOpenCloseTeacher(teacher)} />}
-                                    </TitleDiv>
-
-                                    <OpenContent className={teacher?.isOpen ? 'active' : 'hidden'}>
-                                        <TestsData>
-                                            {teacher?.teacherData?.map((category: any) => {
-                                                return (
-                                                    <Test key={category?.id}>
-                                                        <p className="test-title">{category?.categoriyName}</p>
-                                                        {category?.categoryData?.map((test: any) => {
-                                                            return (
-                                                                <p key={test?.id} className="test-name">
-                                                                    {`${test?.name} (${test?.teacherDiscipline?.discipline?.name})`}
-                                                                </p>
-                                                            )
-                                                        })}
-
-                                                    </Test>
-                                                );
-                                            })}
-                                        </TestsData>
-                                    </OpenContent>
-
-
-                                </TestsDiv>
-                            );
-                        })}
-
                     {selectedTab === 'disciplinas' &&
-                        disciplinesArray?.map(term => {
+                        disciplinesArray?.filter(searchDisciplineFilter)?.map(term => {
                             return (
                                 <TestsDiv key={term?.termNumber} className={term?.isOpen ? 'margin-top' : ''}>
 
@@ -233,6 +216,48 @@ export default function HomePage() {
                                             );
                                         })}
                                     </OpenContent>
+
+                                </TestsDiv>
+                            );
+                        })
+                    }
+
+                    {selectedTab === 'instrutores' &&
+                        teachersArray?.filter(searchTeacherFilter)?.map(teacher => {
+                            return (
+                                <TestsDiv key={teacher?.id} className={teacher?.isOpen ? 'margin-top' : ''}>
+
+                                    <TitleDiv>
+                                        <p>{teacher?.teacherName}</p>
+                                        {teacher?.isOpen ? <IoIosArrowUp
+                                            className="open-icon"
+                                            onClick={() => toggleOpenCloseTeacher(teacher)} />
+                                            :
+                                            <IoIosArrowDown
+                                                className="open-icon"
+                                                onClick={() => toggleOpenCloseTeacher(teacher)} />}
+                                    </TitleDiv>
+
+                                    <OpenContent className={teacher?.isOpen ? 'active' : 'hidden'}>
+                                        <TestsData>
+                                            {teacher?.teacherData?.map((category: any) => {
+                                                return (
+                                                    <Test key={category?.id}>
+                                                        <p className="test-title">{category?.categoriyName}</p>
+                                                        {category?.categoryData?.map((test: any) => {
+                                                            return (
+                                                                <p key={test?.id} className="test-name">
+                                                                    {`${test?.name} (${test?.teacherDiscipline?.discipline?.name})`}
+                                                                </p>
+                                                            )
+                                                        })}
+
+                                                    </Test>
+                                                );
+                                            })}
+                                        </TestsData>
+                                    </OpenContent>
+
 
                                 </TestsDiv>
                             );

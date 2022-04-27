@@ -18,7 +18,7 @@ export default function SignUp() {
 
     return (
         <>
-            <Header isLoggedIn={false} />
+            <Header isLoggedIn={false} inputType='disciplinas' />
             <Container>
                 <AuthForm
                     title="Cadastro"
