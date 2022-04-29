@@ -52,6 +52,24 @@ export const LoggedIn = styled.div`
                 color: rgba(0, 0, 0, 0.6);
             }
         }
+
+        p {
+            width: 464px;
+            height: 58px;
+
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 500;
+            font-size: 24px;
+            letter-spacing: 0.15px;
+            color: rgba(0, 0, 0, 0.8);
+
+            display: flex;
+            justify-content: center;
+
+            box-sizing: border-box;
+            padding-top: 10px;
+        }
     }
 
     .separator {
