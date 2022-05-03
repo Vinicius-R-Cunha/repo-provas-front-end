@@ -26,30 +26,18 @@ export default function DropDown({ title, items, selected, setSelected }: any) {
             </div>
             {open &&
                 <ul className="dd-list">
-                    <li>
-                        <button type="button" onClick={e => {
-                            handleSelection(e);
-                            setOpen(false);
-                        }}>
-                            <span>P1</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" onClick={e => {
-                            handleSelection(e);
-                            setOpen(false);
-                        }}>
-                            <span>P2</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" onClick={e => {
-                            handleSelection(e);
-                            setOpen(false);
-                        }}>
-                            <span>P3</span>
-                        </button>
-                    </li>
+                    {items?.map((item: any) => {
+                        return (
+                            <li key={item}>
+                                <button type="button" onClick={e => {
+                                    handleSelection(e);
+                                    setOpen(false);
+                                }}>
+                                    <span>{item}</span>
+                                </button>
+                            </li>
+                        )
+                    })}
                 </ul>
             }
         </Container>

@@ -68,8 +68,9 @@ export const Container = styled.div`
                 width: 100%;
                 height: 56px;
                 
-                font-size: 16px;
+                font-size: 17px;
                 text-align: left;
+                text-transform: none;
                 
                 display: flex;
                 justify-content: space-between;
