@@ -21,7 +21,7 @@ export default function HomePage() {
     const { token, setToken } = useContext(UserContext);
     const navigate = useNavigate();
 
-    const [selectedTab, setSelectedTab] = useState('disciplinas' as Tabs);
+    const [selectedTab, setSelectedTab] = useState('adicionar' as Tabs);
 
     const [disciplinesArray, setDisciplinesArray] = useState([] as any[]);
     const [teachersArray, setTeachersArray] = useState([] as any[]);
