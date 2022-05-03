@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import UserContext from "../../contexts/UserContext";
@@ -122,6 +122,16 @@ export default function HomePage() {
         return false;
     }
 
+    async function openPdf(link: string, id: number) {
+        const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
+        if (newWindow) newWindow.opener = null;
+
+        const response = await api.updateViews(token, id);
+        if (!response) {
+            window.location.reload();
+        }
+    }
+
     if (teachersArray.length === 0) {
         return (
             <>
@@ -204,8 +214,11 @@ export default function HomePage() {
                                                             {discipline?.disciplineData?.map((test: any) => {
                                                                 return (
                                                                     <Test key={test?.id}>
-                                                                        <p className="test-title">{test?.category?.name}</p>
-                                                                        <p className="test-name">{`${test?.name} (${test?.teacherDiscipline?.teacher?.name})`}</p>
+                                                                        <div>
+                                                                            <p className="test-title">{test?.category?.name}</p>
+                                                                            <p onClick={() => openPdf(test?.pdfUrl, test?.id)} className="test-name">{`${test?.name} (${test?.teacherDiscipline?.teacher?.name})`}</p>
+                                                                        </div>
+                                                                        <p className="view-quantity">{`${test?.views} visualizações`}</p>
                                                                     </Test>
                                                                 );
                                                             })}
@@ -243,12 +256,19 @@ export default function HomePage() {
                                             {teacher?.teacherData?.map((category: any) => {
                                                 return (
                                                     <Test key={category?.id}>
-                                                        <p className="test-title">{category?.categoriyName}</p>
+                                                        <p className="test-title">{category?.categoryName}</p>
                                                         {category?.categoryData?.map((test: any) => {
                                                             return (
-                                                                <p key={test?.id} className="test-name">
-                                                                    {`${test?.name} (${test?.teacherDiscipline?.discipline?.name})`}
-                                                                </p>
+                                                                <React.Fragment key={test?.id}>
+                                                                    <p onClick={() => openPdf(test?.pdfUrl, test?.id)} className="test-name">
+                                                                        {`${test?.name} (${test?.teacherDiscipline?.discipline?.name})`}
+                                                                    </p>
+                                                                    {test?.views === 1 ?
+                                                                        <p className="view-quantity">{`${test?.views} visualização`}</p>
+                                                                        :
+                                                                        <p className="view-quantity">{`${test?.views} visualizações`}</p>
+                                                                    }
+                                                                </React.Fragment>
                                                             )
                                                         })}
 

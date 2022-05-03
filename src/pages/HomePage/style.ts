@@ -161,8 +161,16 @@ export const Test = styled.div`
     
     .test-name {
         font-size: 12px;
-        line-height: 25px;
+        line-height: 21px;
+        color: #1976D2;
+        margin-left: 12px;
+        cursor: pointer;
+    }
+    
+    .view-quantity {
+        font-size: 12px;
         color: #8D8D8D;
+        margin: 7px 0 12px 12px;
     }
 `
 

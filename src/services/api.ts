@@ -58,3 +58,13 @@ export async function getTestsByDisciplines(token: string) {
         console.log(error.response);
     }
 }
+
+export async function updateViews(token: string, id: number) {
+    try {
+        const config = createConfig(token);
+        await axios.put(`${BASE_URL}/test/${id}`, {}, config);
+        return true;
+    } catch (error: any) {
+        console.log(error.response);
+    }
+}
