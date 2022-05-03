@@ -1,32 +1,36 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     AddForm
 } from "./style";
 import DropDown from "../DropDown";
+import * as api from "../../services/api";
+import UserContext from "../../contexts/UserContext";
 
-export default function AddTest() {
+export default function AddTest({ categories, disciplines }: any) {
 
-    const [formData, setFormData] = useState({ name: '', pdfUrl: '' });
+    const { token } = useContext(UserContext);
+
+    const [formData, setFormData]: any = useState({ name: '', pdfUrl: '' });
     const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedDiscipline, setSelectedDiscipline] = useState('');
     const [selectedTeacher, setSelectedTeacher] = useState('');
+    const [teachers, setTeachers]: any = useState([]);
+
+    useEffect(() => {
+        getTeachers();
+    }, [selectedDiscipline]);
 
     function handleFormData(e: React.ChangeEvent) {
         var element = e.target as HTMLInputElement;
         setFormData({ ...formData, [element.name]: element.value })
     }
 
-    const categorias = [
-        "P1", "P2", "P3"
-    ]
-
-    const disciplinas = [
-        "Cálculo", "Álgebra Linear", "Computação"
-    ]
-
-    const professores = [
-        "Bonnot", "Futorny", "Kira"
-    ]
+    async function getTeachers() {
+        if (selectedDiscipline !== '') {
+            const promise = await api.getTeachersByDisciplines(token, selectedDiscipline);
+            setTeachers(promise);
+        }
+    }
 
     function handleSubmit(e: React.MouseEvent) {
         e.preventDefault();
@@ -60,18 +64,20 @@ export default function AddTest() {
                 selected={selectedCategory}
                 setSelected={setSelectedCategory}
                 title="Categoria"
-                items={categorias}
+                items={categories}
             />
             <DropDown
                 selected={selectedDiscipline}
                 setSelected={setSelectedDiscipline}
                 title="Disciplina"
-                items={disciplinas} />
+                items={disciplines}
+            />
             <DropDown
+                disabled={teachers.length === 0 ? true : false}
                 selected={selectedTeacher}
                 setSelected={setSelectedTeacher}
                 title="Pessoa Instrutora"
-                items={professores}
+                items={teachers}
             />
             <button onClick={e => handleSubmit(e)}>ENVIAR</button>
         </AddForm>

@@ -22,13 +22,17 @@ export const Container = styled.div`
     border-radius: 4px;
     
     color: rgba(0, 0, 0, 0.6);
-
+    
     cursor: pointer;
-
+    
+    .disabled {
+        color: rgba(0, 0, 0, 0.1);
+    }
+    
     .dd-header {
         width: 98%;
         height: 100%;
-
+        
         display: flex;
         justify-content: space-between;
         align-items: center;

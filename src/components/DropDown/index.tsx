@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Container } from "./style";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
-export default function DropDown({ title, items, selected, setSelected }: any) {
+export default function DropDown({ title, items, selected, setSelected, disabled }: any) {
     const [open, setOpen] = useState(false);
 
     function handleSelection(e: any) {
@@ -13,9 +13,9 @@ export default function DropDown({ title, items, selected, setSelected }: any) {
         <Container>
             <div
                 tabIndex={0}
-                className="dd-header"
+                className={`dd-header ${disabled ? 'disabled' : ''}`}
                 role="button"
-                onClick={() => setOpen(!open)}
+                onClick={() => items.length > 0 && setOpen(!open)}
             >
                 <p>{selected === '' ? title : selected}</p>
                 {open ?
@@ -28,12 +28,14 @@ export default function DropDown({ title, items, selected, setSelected }: any) {
                 <ul className="dd-list">
                     {items?.map((item: any) => {
                         return (
-                            <li key={item}>
+                            <li key={item.id}>
                                 <button type="button" onClick={e => {
-                                    handleSelection(e);
-                                    setOpen(false);
+                                    if (!disabled) {
+                                        handleSelection(e);
+                                        setOpen(false);
+                                    }
                                 }}>
-                                    <span>{item}</span>
+                                    <span>{item.name}</span>
                                 </button>
                             </li>
                         )

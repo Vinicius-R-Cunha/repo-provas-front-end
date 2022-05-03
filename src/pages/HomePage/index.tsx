@@ -23,8 +23,10 @@ export default function HomePage() {
 
     const [selectedTab, setSelectedTab] = useState('adicionar' as Tabs);
 
-    const [disciplinesArray, setDisciplinesArray] = useState([] as any[]);
-    const [teachersArray, setTeachersArray] = useState([] as any[]);
+    const [disciplinesArray, setDisciplinesArray]: any[] = useState([]);
+    const [teachersArray, setTeachersArray]: any = useState([]);
+    const [categories, setCategories]: any = useState([]);
+    const [disciplines, setDisciplines]: any = useState([]);
 
     useEffect(() => {
         validateToken(token);
@@ -40,6 +42,12 @@ export default function HomePage() {
     }
 
     async function renderPage() {
+        await renderDisciplinesTab();
+        await renderTeachersTab();
+        await renderAddTestTab();
+    }
+
+    async function renderDisciplinesTab() {
         const disciplines = await api.getTestsByDisciplines(token) as any;
         setDisciplinesArray(() => {
             const newArr = [];
@@ -51,9 +59,18 @@ export default function HomePage() {
 
             return addIsOpenKey(newArr);
         });
+    }
 
+    async function renderTeachersTab() {
         const teachers = await api.getTestsByTeacher(token);
         setTeachersArray(addIsOpenKey(teachers?.data));
+    }
+
+    async function renderAddTestTab() {
+        const categoriesPromise = await api.getCategories(token);
+        const disciplinesPromise = await api.getDisciplines(token);
+        setCategories(categoriesPromise);
+        setDisciplines(disciplinesPromise);
     }
 
     function addIsOpenKey(array: any[]) {
@@ -100,7 +117,7 @@ export default function HomePage() {
                     }
 
                     {selectedTab === 'adicionar' &&
-                        <AddTest />
+                        <AddTest categories={categories} disciplines={disciplines} />
                     }
                 </Content>
             </Container>

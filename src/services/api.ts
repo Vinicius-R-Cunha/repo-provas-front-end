@@ -68,3 +68,33 @@ export async function updateViews(token: string, id: number) {
         console.log(error.response);
     }
 }
+
+export async function getCategories(token: string) {
+    try {
+        const config = createConfig(token);
+        const promise = await axios.get(`${BASE_URL}/categories`, config);
+        return promise?.data;
+    } catch (error: any) {
+        console.log(error.response);
+    }
+}
+
+export async function getDisciplines(token: string) {
+    try {
+        const config = createConfig(token);
+        const promise = await axios.get(`${BASE_URL}/disciplines`, config);
+        return promise?.data;
+    } catch (error: any) {
+        console.log(error.response);
+    }
+}
+
+export async function getTeachersByDisciplines(token: string, discipline: string) {
+    try {
+        const config = createConfig(token);
+        const promise = await axios.get(`${BASE_URL}/teacher/${discipline}`, config);
+        return promise?.data;
+    } catch (error: any) {
+        console.log(error.response);
+    }
+}
