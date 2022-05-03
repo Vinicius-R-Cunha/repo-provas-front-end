@@ -98,3 +98,21 @@ export async function getTeachersByDisciplines(token: string, discipline: string
         console.log(error.response);
     }
 }
+
+export interface CreateTest {
+    name: string,
+    pdfUrl: string,
+    category: string,
+    discipline: string,
+    teacher: string
+}
+
+export async function createTest(token: string, body: CreateTest) {
+    try {
+        const config = createConfig(token);
+        await axios.post(`${BASE_URL}/tests`, body, config);
+        return true;
+    } catch (error: any) {
+        console.log(error.response);
+    }
+}

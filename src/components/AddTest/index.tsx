@@ -5,6 +5,8 @@ import {
 import DropDown from "../DropDown";
 import * as api from "../../services/api";
 import UserContext from "../../contexts/UserContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddTest({ categories, disciplines }: any) {
 
@@ -32,20 +34,63 @@ export default function AddTest({ categories, disciplines }: any) {
         }
     }
 
-    function handleSubmit(e: React.MouseEvent) {
+    async function handleSubmit(e: React.MouseEvent) {
         e.preventDefault();
 
-        const newFormData = {
+        const newFormData: api.CreateTest = {
             ...formData,
             category: selectedCategory,
             discipline: selectedDiscipline,
             teacher: selectedTeacher
         }
-        console.log(newFormData);
+
+        const promise = await api.createTest(token, newFormData);
+        if (promise) {
+            resetPage();
+            toast.success('Prova adicionada com sucesso!', {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else {
+            toast.error('Falha ao adicionar prova', {
+                position: "bottom-left",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    }
+
+    function resetPage() {
+        setFormData({ name: '', pdfUrl: '' })
+        setSelectedCategory('');
+        setSelectedDiscipline('');
+        setSelectedTeacher('');
+        setTeachers([]);
     }
 
     return (
         <AddForm>
+            <ToastContainer
+                position="bottom-left"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                closeButton={false}
+            />
             <input
                 name="name"
                 type="text"
@@ -65,6 +110,7 @@ export default function AddTest({ categories, disciplines }: any) {
                 setSelected={setSelectedCategory}
                 title="Categoria"
                 items={categories}
+
             />
             <DropDown
                 selected={selectedDiscipline}

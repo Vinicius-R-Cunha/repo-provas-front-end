@@ -117,7 +117,7 @@ export default function HomePage() {
                     }
 
                     {selectedTab === 'adicionar' &&
-                        <AddTest categories={categories} disciplines={disciplines} />
+                        <AddTest categories={categories} disciplines={disciplines} setSelectedTab={setSelectedTab} />
                     }
                 </Content>
             </Container>
